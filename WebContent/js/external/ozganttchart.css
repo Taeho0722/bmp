@@ -1,0 +1,314 @@
+			body{
+ 				width:98%;
+ 				height:95%;
+			}
+			.button{
+   				 margin-top: 25px;
+			}
+			.calendar{
+				font-family:'Malgun Gothic' ;
+				border-left:0px solid #dddddd;/*changed 20171026 15:59 16:01 prev:0.2px;*/
+				border-bottom:0px solid #dddddd;
+				border-right:0px solid #dddddd; /*changed 20171026 15:59 16:01 prev:0.3px;*/
+				table-layout:fixed;
+				border-top:0px;
+				border-spacing: 0px;
+				margin-right:0px;
+				width:100%;
+				display:table;
+				margin:auto 0;
+				padding:0px;
+			}
+
+			
+			.calendar    th {
+			    text-align: right;
+				font-weight:lighter;
+				height:12px;
+				letter-spacing:0px;
+				font-size:10px;
+				border-spacing:0px;
+			}
+			.calendar    td {
+			    text-align: center;
+			    padding: 0px 0px 0px 0px;
+				font-weight:lighter;
+				height:25px;
+				letter-spacing:0px;
+				font-size:inherit;
+				border-spacing:0px;
+
+			}
+		
+			.hdtable{
+				border-spacing:0px;
+				
+			}
+			.hdtable .tooltip1{
+				border-right:0.5px solid #dddddd;
+				border-top:0px;
+				border-left:0px;
+				border-bottom:0px;
+				padding:0px;
+				text-align:middle;
+				height:36px;
+				font-size:9px;
+				font-weight:lighter;
+				color:white;
+				text-overflow:ellipsis;
+				overflow:hidden;
+				white-space:nowrap;
+				font-family: 'Malgun Gothic';
+				background-color:#374961;
+				outline:0.1px solid #dddddd;
+				position:relative;
+			}
+			.txtspan{
+				position:relative;
+				left:2px;
+				text-overflow:ellipsis;
+				white-space:nowrap;
+				overflow:hidden;
+			}
+			.tableincontainheader{
+				width:100%;
+				height:100%;
+				border-spacing:0px;
+				margin:auto 0;
+				border:0px;
+				font-family: 'Malgun Gothic';
+				table-layout: fixed;
+			}
+			.scrollview{
+				height: calc(100% - 50px);
+				position: relative;
+				top: 0; 
+				bottom: 300px;
+				width:100%;
+				padding: 0px;
+			}
+			.tableincontainbody{
+				width:100%;
+				height:100%;
+				border-spacing:0px;
+				margin:auto 0;
+				border:0px;
+				font-family: 'Malgun Gothic';
+				table-layout: fixed;
+			}
+			.containbody{
+				border-top: 0;
+				vertical-align: middle;
+				padding-top: 0px;
+				padding-bottom: 0px;
+				height:inherit;
+			}
+			.containheader{
+				border-top: 0px;
+				border-bottom: 0px;
+				padidng: 0px;
+				padding: 0px;
+				outline:0.1px solid #dddddd;
+				position:relative;
+			}
+			.tableintd{
+				width:100%;
+				height:100%;
+				border-spacing:0px;
+				margin:auto 0;
+				border:0px;
+				table-layout: fixed;
+				padding:0px;
+			}
+			.schedulertd{
+				padding-top:0px;
+				padding-bottom:0px;
+				padding:0px;
+				border-right:0.1px solid #bfbfbf; /*20171030->0.1*/
+				border-left:0px solid #dddddd;
+				width:100%;
+			}
+			.tableintd td{
+				bottom:0;
+				padding:2px 0px 4px 0px;
+				letter-spacing:-1px;
+				font-size:100%;
+				border-spacing:0px;
+				height:19px;
+				text-align:center;
+				position:relative;
+				width:3%;
+			}
+			.bdtable{
+				border-spacing:0px;
+				font-size:inherit;
+				border-bottom:2px solid #dddddd;
+			}
+			.bdtable .tooltip1{
+				border-right: 0.5px solid #dddddd;
+				border-bottom: 1px solid #dddddd;
+				border-left:0px;
+				text-overflow:ellipsis;
+				overflow:hidden;
+				white-space:nowrap;
+				font-size:inherit;
+				table-layout:fixed;
+				padding:0px;
+			}
+			td{
+				 border-top:0;
+				 vertical-align:middle;
+			}
+			th{
+				margin-bottom:0px;
+				border-top:0;
+			}
+			tr{
+				height:19px;
+			}
+			.headertr{
+				height:1%;
+				
+			}
+			.bigtd{
+				background-color:#374961;
+				border-left:0;
+				border-right:0;
+				border-bottom:0;
+				color:white;
+				text-align:center;
+				width:100%; /*2017/10/26*/
+		
+			}
+			.bigtableth{
+				border-right:0px solid #dddddd;
+				border-left:0px solid #dddddd;/*20171026 15:59 16:01*/
+				border-bottom:0px;
+				padding-left:0px;
+				padding-right:0px;
+				padding:0px;
+				outline:0.1px solid #dddddd;
+				background-color:#374961;
+				position:relative; /*20171109*/
+			}
+			.firsttr{
+				height:14px;
+				background-color:#374961;
+				width:100%;
+			}
+			.fixed{width:100%;}
+			.headth{
+				text-align:right;
+				border-left:0;
+				border-right:0;
+				font-weight:lighter;
+				color:#B47835;
+				position:relative; /*20171025*//*absolute*/
+			}
+			
+			.dates{
+				text-align:right;
+				border-left:0;
+				border-right:0;
+				border-bottom:0;
+				font-weight:lighter;
+				height:100%;/*20171024*/
+			}
+			.sunday{
+				text-align:right;
+				border-left:0;
+				border-right: 0.1px solid #dddddd;
+				border-bottom:0;
+				font-weight:lighter;
+				height:100%;/*20171024*/
+			}
+			
+			.tooltip {
+			  	position:absolute;
+			    border: 0.5px dotted #9ACBED;
+			    width:104%;
+				height:15px;
+				background-color:#9ACBED;
+				cursor:pointer;
+				top:6px;
+				
+			}
+			.tooltip2 {
+			  	position:absolute;
+			    border: 0.5px dotted #9ACBED;
+			  	height:15px;
+				background-color:#9ACBED;
+				cursor:pointer;
+				top:5px;
+				z-index:100;
+				
+			}
+			.tooltip .tooltiptext {
+			    visibility: hidden;
+			    background-color: #aaaaaa;
+			    color: #fff;
+			    text-align: center;
+			    border-radius: 6px;
+			    padding: 5px 0;
+			    overflow:visible;
+				white-space:nowrap;
+			    /* Position the tooltip */
+			    position: absolute;
+			    z-index: 10000;
+			    top: 100%;
+			    left: 50%;
+			    margin-left: -60px;
+			}
+			.tooltip2 .tooltiptext {
+			    visibility: hidden;
+			    width: 160px;
+			    background-color: #aaaaaa;
+			    color: #fff;
+			    text-align: center;
+			    border-radius: 6px;
+			    padding: 2px 5px;
+			    overflow:visible;
+				white-space:nowrap;
+			    /* Position the tooltip */
+			    position: relative;
+			    z-index: 1000;
+			    top:calc(0% + 5px);
+			    left: calc(0% + 5px);
+			    margin-left: -60px;
+			}
+			.tooltip2:hover .tooltiptext {
+			    visibility: visible;
+			}
+			.tooltip:hover .tooltiptext {
+			    visibility: visible;
+			}
+		
+			.bigtableheader{
+				position:relative;
+				z-index:10000;
+			}
+			.datetext{
+				overflow:visible!important;
+			}
+			.hdtable{
+				table-layout:fixed;
+				display:table;
+			}
+			.bigtablebody{
+				position:relative;
+				top:0%;
+			}
+			.bdtable{
+				position:relative;
+			}
+			.containbody{
+				position:relative;
+				width:inherit;
+			}
+			.tableincontainbody{
+				position:relative;
+				width:100%;
+			}
+			.bigtablethchild{
+				width:100%;
+			}

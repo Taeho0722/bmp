@@ -1,0 +1,38 @@
+//document.write('<meta charset="utf-8"/>');
+document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />');
+document.write('<meta name="HandheldFriendly" content="true"/>');
+document.write('<meta name="MobileOptimized" content="320"/>');
+document.write('<meta name="format-detection" content="telephone=no"/>');
+document.write('<link rel="stylesheet" type="text/css" href="../css/dx.common.css" />');
+document.write('<link rel="stylesheet" type="text/css" href="../css/dx.light.compact.css" />   ');
+document.write('<link rel="stylesheet" href="../css/grid/wijmo.min.css" />');
+document.write('<link rel="stylesheet" type="text/css" href="../css/oz.common.css"/>');
+//document.write('<link rel="stylesheet" type="text/css" href="../css/oz.lookandfeel.css"/>');
+document.write('<script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>');
+document.write('<script type="text/javascript" src="../js/underscore.js"></script>');
+document.write('<script type="text/javascript" src="../js/globalize.min.js"></script>');
+document.write('<script src="../js/dx.viz-web.js"></script>');
+document.write('<script src="../js/oz.agent.js"></script>');
+document.write('<script src="../js/oz.framework.js"></script>');
+document.write('<script src="../js/oz.controls.js"></script>');
+document.write('<script src="../js/grid/wijmo.min.js" type="text/javascript"></script>');
+document.write('<script src="../js/grid/wijmo.grid.min.js" type="text/javascript"></script>');
+document.write('<script src="../js/grid/wijmo.input.min.js" type="text/javascript"></script>');
+document.write('<script src="../js/oz.grid.js" type="text/javascript"></script>');
+document.write('<script src="../js/FrameSystemLog.js" type="text/javascript"></script>');
+document.write('<script src="../js/FrameSystemSecurity.js" type="text/javascript"></script>');
+// CRYPTO (Secure)
+document.write('<script type="text/javascript" src="../js/crypto/jsbn.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/jsbn2.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/prng4.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/rng.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/rsa.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/rsa2.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/base64.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/core.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/aes.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/enc-utf16-min.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/enc-base64-min.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/mode-ecb.js"></script>');
+document.write('<script type="text/javascript" src="../js/crypto/base64init.js"></script>');
+

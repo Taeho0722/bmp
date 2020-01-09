@@ -1,0 +1,209 @@
+function oz_HtmlEditor(id){
+	var id = '#' + id;
+	var id2 = id;
+	this.init = function() {		
+		$(id).append("<div class='dummy'> </div>");
+		id = id + ' .dummy';
+	}
+	
+	var inst = this;
+	this.summernote;
+	
+	var vViewerMode = false;
+	this.Show = function () {
+		console.log(id);
+		$(id).summernote({
+			
+			//'note-editor.note-frame.panel panel-default'
+			//height : $(window).height()-$(id + '.note-toolbar.panel-heading').height()-378,
+            //minHeight : $(window).height()-$(id + '.note-toolbar.panel-heading').height()-378,
+            //maxHeight : $(window).height()-$(id + '.note-toolbar.panel-heading').height()-378,
+			
+			height : $(id2).height(),
+			//minheight : $(id2).height() - $(id + '.note-toolbar.panel-heading').height(),
+			//maxheight : $(id2).height() - $(id + '.note-toolbar.panel-heading').height(),
+			
+			shortcuts : false,
+			tabsize : 2,
+			onload: function (e){
+				inst.BrowserLoadCompleted();    
+				inst.resize_panel();					
+        	},
+			toolbar : [
+						// [groupName, [list of button]]
+						[ 'parastyle', [ 'style' ] ],
+						[ 'color', [ 'color' ] ],
+						[
+								'style',
+								[
+										'bold',
+										'italic',
+										'underline',
+										'strikethrough',
+										'clear' ] ],
+						[
+								'fontsize',
+								[ 'fontname',
+										'fontsize' ] ],
+						[
+								'para',
+								[ 'ul', 'ol',
+										'paragraph' ] ],
+						[ 'height', [ 'height' ] ],
+						[ 'code', [ 'codeview' ] ],
+						[
+								'link',
+								[ 'linkDialogShow',
+										'picture' ] ],
+						[ 'help', [ 'help' ] ] ],
+			codemirror : {
+					mode : 'text/html',
+					htmlMode : true,
+					lineNumbers : true,
+					theme : 'monokai'
+			},
+			disableDragAndDrop : true,
+			callbacks : {
+				onKeyup : function(e) {
+
+					var code = $(id).summernote('code');
+						if (code == '') {
+							$(id).summernote('code','<p><br></p>');
+						} else if (code.substring(0, 1) != '<') {
+							$(id).summernote('code','<p>'+ code+ '</p>')
+						}
+						if (code.substring(code.length - 7,code.length) == '<p></p>') {
+							$(id).summernote('code',code.substring(0,code.length - 7))
+						}
+					},
+					onInit : function() {
+						if ($(id).summernote('code') == '<p></p>') {
+							$(id).summernote('code','<p><br></p>');
+					}
+				}
+			}
+		});
+		//this.summernote = $(id).summernote();
+		//this.SetViewerMode();
+		this.resize_panel();
+		
+		return this.summernote;
+	}
+
+	
+	Object.defineProperty(this, 'ViewerMode', {
+        get: function () {
+            return vViewerMode;
+        },
+        set: function (val) {
+        	vViewerMode = val;
+        }
+    });
+	
+	
+	this.SetViewerMode = function() {
+//        if(vViewerMode)
+//        {
+//        	$(id).summernote('hidden',true);
+//        }  
+//        else
+//        {
+//        	$(id).summernote('hidden',false);        	
+//        }
+	}
+	
+	
+
+	
+	this.HtmlAddText = function(Text) {
+		var HtmlCont =  GetHtmlCont() + Text;
+	}
+
+	this.GetTextCont = function(){
+		var TextCont = this.extraction();
+		return TextCont;
+	}
+	
+	this.GetHtmlCont = function() {
+		var HtmlCont = this.output_code();
+		HtmlCont = ozf_ReplaceString(HtmlCont, '"', "'");
+		return HtmlCont;
+	}
+	
+	this.SetTextCont = function(TextCont) {
+		var TextCont = "<P>" & TextCont & "</P>"
+		this.input_code(TextCont);
+		
+	}
+	
+	this.SetHtmlCont = function(HtmlCont , ExistHtml ) {
+		this.input_code(HtmlCont);
+		
+		/*
+		if (!vViewerMode)
+		{
+			this.input_code(HtmlCont);
+		}
+		else
+		{
+			
+			var TempHtml = '';
+			TempHtml = "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>";
+			TempHtml &= "<html xmlns='http://www.w3.org/1999/xhtml'>";
+		    TempHtml &= "   <head>";
+		    TempHtml &= "      <title>obzenHtml</title>";
+		    TempHtml &= "      <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />";
+		    TempHtml &= "   </head>";
+		    TempHtml &= "   {0} ";
+		    TempHtml &= "</html>";
+		    	
+		    //this.input_code(HtmlCont);
+		}
+		//this.SetViewerMode();
+		*/
+	}
+		
+	this.output_code = function() {
+		return $(id).summernote('code');
+	}
+	
+	this.input_code = function(code) {
+		$(id).summernote('code',code);
+	}
+	
+	this.extraction = function() {
+		var str = $(id).summernote('code').replace(/<\/p>/gi, '\n').replace(/<br\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, '').replace("&nbsp;", " ").replace(/"/g, "'")
+		return str;
+	}
+	
+	$( window ).resize(function() {
+				
+		$('.note-editable.panel-body').css('height', $(id2).height() - $(id2 + ' .note-toolbar.panel-heading').height() - 15);
+		$('.note-editable.panel-body').css('maxheight', $(id2).height() - $(id2 + ' .note-toolbar.panel-heading').height() - 15);
+		$('.note-editable.panel-body').css('minheight', $(id2).height() - $(id2 + ' .note-toolbar.panel-heading').height() - 15);
+		
+		//$('.note-editable.panel-body').css('height',$( window ).height()-$('.note-toolbar.panel-heading').height()-382);
+		//$('.note-editable.panel-body').css('max-height',$( window ).height()-$('.note-toolbar.panel-heading').height()-382);
+		//$('.note-editable.panel-body').css('min-height',$( window ).height()-$('.note-toolbar.panel-heading').height()-382); 
+	});
+	
+	this.resize_panel = function() {
+		$('.note-editable.panel-body').css('height', $(id2).height() - $(id2 + ' .note-toolbar.panel-heading').height() - 15);
+		$('.note-editable.panel-body').css('maxheight', $(id2).height() - $(id2 + ' .note-toolbar.panel-heading').height() - 15);
+		$('.note-editable.panel-body').css('minheight', $(id2).height() - $(id2 + ' .note-toolbar.panel-heading').height() - 15);
+		
+		//$('.note-editable.panel-body').css('height',$( window ).height()-$('.note-toolbar.panel-heading').height()-378);
+		//$('.note-editable.panel-body').css('max-height',$( window ).height()-$('.note-toolbar.panel-heading').height()-378);
+		//$('.note-editable.panel-body').css('min-height',$( window ).height()-$('.note-toolbar.panel-heading').height()-378);
+	}
+
+    this.BrowserLoadCompleted = function (e) { }
+    if (!oz_HtmlEditor.prototype.addEventListener) {
+    	oz_HtmlEditor.prototype.addEventListener = function (e, f) {
+            if (e === "loadcompleted") {
+            	this.BrowserLoadCompleted = f;
+            }
+        }
+    }
+	
+}

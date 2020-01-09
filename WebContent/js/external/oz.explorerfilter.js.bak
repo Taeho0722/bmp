@@ -1,0 +1,2361 @@
+/**
+ * @description
+ */
+function ozexplorerfilter(id) {
+    var vid = id; //div 태그 아이디
+    var inst = this;
+    this.id = '#' + id;
+
+    this.ChoiceFilterFnc = function (e) { } //필터 클릭하였을때 이벤트
+
+    var ctlexplorerfilter;  //explorerfilter
+    var treedataSource = [];
+
+    var OperationsList = [];  //연산자 List
+    var DoNotDisplayFilterList = [];  //보여지지않은필터 목록
+    var ExplorerSqlDataList = [];  //ExplorerSqlData  '//선.후행 SQl
+
+    var parser = new DOMParser();  //parser
+
+    /**
+    *LoadServerSelector 설정
+    * 사용하지 않음
+    */
+    var vLoadServerSelector = "";
+    this.LoadServerSelector = function (val) {
+        vLoadServerSelector = val;
+    }
+
+
+    /**
+     * CubeAddress
+     */
+    var vCubeAddress = "";
+    Object.defineProperty(this, 'CubeAddress', {
+        get: function () {
+            return vCubeAddress;
+        },
+        set: function (val) {
+            vCubeAddress = val;
+        }
+    });
+
+    /**
+     * ReportAddress
+     */
+    var vReportAddress = "";
+    Object.defineProperty(this, 'ReportAddress', {
+        get: function () {
+            return vReportAddress;
+        },
+        set: function (val) {
+            vReportAddress = val;
+        }
+    });
+
+
+    /**
+     * CUST_ID
+     */
+    var vCustOzid = "";
+    Object.defineProperty(this, 'CustOzid', {
+        get: function () {
+            return vCustOzid;
+        },
+        set: function (val) {
+            vCustOzid = val;
+        }
+    });
+
+
+
+    /**
+    * DBServer
+    */
+    var gDBServer = "";
+    Object.defineProperty(this, 'DBServer', {
+        get: function () {
+            return gDBServer;
+        },
+        set: function (val) {
+            gDBServer = val;
+        }
+    });
+
+
+    /**
+    * CubeOZID
+    */
+    var vCubeozid = "";
+    Object.defineProperty(this, 'Cubeozid', {
+        get: function () {
+            return vCubeozid;
+        },
+        set: function (val) {
+            vCubeozid = val;
+        }
+    });
+
+
+    /**
+    * Reportozid
+    */
+    var vReportozid = "";
+    Object.defineProperty(this, 'Reportozid', {
+        get: function () {
+            return vReportozid;
+        },
+        set: function (val) {
+            vReportozid = val;
+        }
+    });
+
+    /**
+    * ReportCont
+    */
+    var vReportCont = "";
+    Object.defineProperty(this, 'ReportCont', {
+        get: function () {
+            return vReportCont;
+        },
+        set: function (val) {
+            vReportCont = val;
+        }
+    });
+
+    /**
+     * 조건 ID 돌려주기
+     */
+    var vGetCondId = "";
+    Object.defineProperty(this, 'GetCondId', {
+        get: function () {
+            var vCondId = "";
+            var vFilterId = "";
+
+            var vType = "";
+
+            for (var i = 0; i < treedataSource.length; i++) {
+                vType = treedataSource[i].type;
+                vFilterId = treedataSource[i].cont;
+                if ((vType.equals("2")) || (vType.equals("6"))) {
+                    //vFilterId = Base64Util.EcubeDecodeString(eCubeAgent, gSelector, vFilterId)  '//EnCode되어있는걸 DeCode  *************
+                    if (vCondId.equals("")) {
+                        vCondId = vFilterId;
+                    } else {
+                        vCondId += ";" + vFilterId;
+                    }
+                }
+            }
+            return vCondId;
+        }
+    });
+
+
+    /**
+    * ChoiceCont
+    */
+    var vChoiceCont = "";
+    Object.defineProperty(this, 'ChoiceCont', {
+        get: function () {
+            return vChoiceCont;
+        },
+        set: function (val) {
+            vChoiceCont = val;
+        }
+    });
+
+    /**
+    * ChoiceRow
+    */
+    var vChoiceRow = "";
+    Object.defineProperty(this, 'ChoiceRow', {
+        get: function () {
+            return vChoiceRow;
+        },
+        set: function (val) {
+            vChoiceRow = val;
+        }
+    });
+
+
+    /**
+    * ChoiceType
+    */
+    var vChoiceType = "";
+    Object.defineProperty(this, 'ChoiceType', {
+        get: function () {
+            return vChoiceType;
+        },
+        set: function (val) {
+            vChoiceType = val;
+        }
+    });
+
+    /**
+    * ChoiceOzid
+    */
+    var vChoiceOzid = "";
+    Object.defineProperty(this, 'ChoiceOzid', {
+        get: function () {
+            return vChoiceOzid;
+        },
+        set: function (val) {
+            vChoiceOzid = val;
+        }
+    });
+
+
+    /**
+    * ChoiceCondition
+    */
+    var vChoiceCondition = "";
+    Object.defineProperty(this, 'ChoiceCondition', {
+        get: function () {
+            return vChoiceCondition;
+        },
+        set: function (val) {
+            vChoiceCondition = val;
+        }
+    });
+
+    /**
+    * ChoiceIsnot
+    */
+    var vChoiceIsnot = "";
+    Object.defineProperty(this, 'ChoiceIsnot', {
+        get: function () {
+            return vChoiceIsnot;
+        },
+        set: function (val) {
+            vChoiceIsnot = val;
+        }
+    });
+
+
+    /**
+    * ChoiceValue
+    */
+    var vChoiceValue = "";
+    Object.defineProperty(this, 'ChoiceValue', {
+        get: function () {
+            return vChoiceValue;
+        },
+        set: function (val) {
+            vChoiceValue = val;
+        }
+    });
+
+    /**
+    * ChoiceCode
+    */
+    var vChoiceCode = "";
+    Object.defineProperty(this, 'ChoiceCode', {
+        get: function () {
+            return vChoiceCode;
+        },
+        set: function (val) {
+            vChoiceCode = val;
+        }
+    });
+
+
+    /**
+     * 조회건수 컬럼 보여주기
+     */
+    var vHideColCustCnt = false;
+    Object.defineProperty(this, 'HideColCustCnt', {
+        get: function () {
+            return vHideColCustCnt;
+        },
+        set: function (val) {
+            vHideColCustCnt = val;
+        }
+    });
+
+
+    
+    /**
+     * 필수 조건
+     */
+    var vNecessaryItem = "";
+    Object.defineProperty(this, 'NecessaryItem', {
+        set: function (val) {
+            vNecessaryItem = val;
+        }
+    });
+
+    /**
+    * 정렬 항목
+    */
+    var vItemRank = "";
+    Object.defineProperty(this, 'ItemRank', {
+        get: function () {
+            return vItemRank;
+        },
+        set: function (val) {
+            vItemRank = val;
+        }
+    });
+
+
+    /**
+    * Explorer에서 사용될 delimiter
+    */
+    var vDelimiter = ";";
+    Object.defineProperty(this, 'ExpDelimiter', {
+        get: function () {
+            return vDelimiter;
+        },
+        set: function (val) {
+            vDelimiter = val;
+        }
+    });
+
+
+
+    /**
+    * PostSQL
+    */
+    Object.defineProperty(this, 'PostSQL', {
+        get: function () {
+            var SQL = "";
+            var temp = "";
+            var tempsql = "";
+            for (var i = 0; ExplorerSqlDataList.length; i++) {
+                temp = ExplorerSqlDataList[i].flttype;
+                tempsql = ExplorerSqlDataList[i].fltCont;
+                if (temp.equals("1")) {  //선행SQL일경우
+                    if (SQL.equals("")) {
+                        SQL = tempsql;
+                    } else {
+                        SQL += ";" + tempsql;
+                    }
+                }
+            }
+            return SQL;
+        }
+    });
+
+    /**
+    * PreSQL
+    */
+    Object.defineProperty(this, 'PreSQL', {
+        get: function () {
+            var SQL = "";
+            var temp = "";
+            var tempsql = "";
+            for (var i = 0; ExplorerSqlDataList.length; i++) {
+                temp = ExplorerSqlDataList[i].flttype;
+                tempsql = ExplorerSqlDataList[i].fltCont;
+                if (temp.equals("2")) {  //후행SQL일경우
+                    if (SQL.equals("")) {
+                        SQL = tempsql;
+                    } else {
+                        SQL += ";" + tempsql;
+                    }
+                }
+            }
+            return SQL;
+        }
+    });
+    
+
+    /**
+     * OPER 설정
+     */
+    var vOpers = "";
+    Object.defineProperty(this, 'Opers', {
+        set: function (val) {
+            vOpers = val.toUpperCase();
+            OperationsList = []; //초기화
+
+            if (!vOpers.equals("")) {   //값이 있다면
+                var Oper_arr = new Array();
+                Oper_arr = vOpers.split(";");
+                var OperCnt = Oper_arr.length - 1
+                var Oper = "";
+                var NextOper = "";
+                var Opers = 0;
+                for (var i = 0; i <= OperCnt; i++) {
+                    Oper = Oper_arr[i];
+                    if (!Oper.equals("")) {
+                        if (i == OperCnt) {
+                            Opers = 0;
+                        } else {
+                            Opers = i + 1;
+                        }
+
+                        NextOper = Oper_arr[Opers];
+                        var NewOperationsList = {};
+                        NewOperationsList['Oper'] = Oper;
+                        NewOperationsList['NextOper'] = NextOper;
+                        OperationsList.push(NewOperationsList);
+                    }
+                }
+            }
+        }
+    });
+    
+
+    /**
+     * 초기화
+     */
+    this.Initialize = function () {
+        this.GetReportContent(); //리포트 ozid와 xml 알아오기
+        this.TreeListInit(); //TreeList 초기화
+    }
+
+    
+
+    /**
+    * 리포트 ozid와 xml알아오기
+    */
+    this.GetReportContent = function () {
+        var ozid = "";
+        var xml = GetMetaData_GetReportInfo(this.CubeAddress + this.ReportAddress);        
+        var xmlDoc = parser.parseFromString(xml, "text/xml");
+
+        var reportnode = xmlDoc.getElementsByTagName("ListReport")[0];
+        ozid = reportnode.getAttribute('address');
+        this.Reportozid = ozid;
+        
+        xml = GetMetaData_GetReportCont(xml);
+
+        var ReportDoc = parser.parseFromString(xml, "text/xml");
+        reportnode = ReportDoc.getElementsByTagName("ListReport")[0];
+        ozid = reportnode.getAttribute('cubeozid');
+
+        this.Cubeozid = ozid;
+        this.ReportCont = xml;
+    }
+
+    /**
+    * TreeList 초기화
+    */
+    this.TreeListInit = function () {
+        $(this.id).dxTreeList({
+            dataSource: treedataSource,
+            parentIdExpr: 'pid',
+            showRowLines: true,
+            showColumnHeaders: false,
+            showColumnLines: true,
+            showBorders: true,
+            autoExpandAll: true,
+            onCellClick: function (e) {
+                itemClick(e);
+            }
+            //columnAutoWidth: true
+        });
+
+        ctlexplorerfilter = $(this.id).dxTreeList('instance');
+
+        this.Init_Columns();
+        this.addAndRoot();
+    }
+
+
+    /**
+     *클릭 이벤트
+     * @param {any} e
+     */
+    function itemClick(e) {
+        var row = e.rowIndex;
+        var col = e.columnIndex;
+
+        vChoiceCont = e.data.cont.outerHTML;
+        vChoiceRow = row;
+        vChoiceType = e.data.type;
+        vChoiceOzid = e.data.ozid;
+        vChoiceCondition = e.data.condition;
+        vChoiceIsnot = e.data.isnot;
+        vChoiceValue = e.data.value;
+        vChoiceCode = e.data.code;
+
+        if (row > 0) {
+            //이벤트 발생
+            inst.ChoiceFilterFnc();
+        }
+    }
+
+
+    /**
+    *  초기 기본 정보
+    */
+    this.addAndRoot = function () {
+        var id = this.MakeFilterozid();
+        var seq = this.FindMaxSeq();
+        treedataSource.push(this.make_NodeData(seq, 0, 'AND', 'AND', id, 'Filter', 'AND', 'F', '', '', '', '', '조회 건수', '', seq));
+        ctlexplorerfilter.option('dataSource', treedataSource);
+        ctlexplorerfilter.repaint();
+    }
+    
+
+    /**
+    * ExplorerFilter 컬럼 정보
+    */
+    this.Init_Columns = function () {
+        var columns = [
+            {
+                caption: 'Desc', dataField: 'desc'
+            },
+            {
+                caption: 'Name', dataField: 'name', visible: false
+            },
+            {
+                caption: 'Ozid', dataFeild: 'ozid', visible: false
+            },
+            {
+                caption: 'itemType', dataField: 'itemtype', visible: false
+            },
+            {
+                caption: 'Condition', dataField: 'condition', visible: false
+            },
+            {
+                caption: 'IsNot', dataField: 'isnot', visible: false
+            },
+            {
+                caption: 'Type', dataField: 'type', visible: false
+            },
+            {
+                caption: 'Value', dataField: 'value', visible: false
+            },
+            {
+                caption: 'Code', dataField: 'code', visible: false
+            },
+            {
+                caption: 'Cont', dataField: 'cont', visible: false
+            },
+            {
+                caption: 'CustCnt', dataField: 'custcnt', alignment: 'center', width: 100
+            },
+            {
+                caption: 'Del', dataField: 'del', alignment: 'center', width: 50
+            },
+            {
+                caption: 'Seq', dataField: 'seq', visible: false
+            }];
+        ctlexplorerfilter.option('columns', columns);
+    }
+
+
+    /**
+     * Node 만들기
+     * @param {any} id
+     * @param {any} pid
+     * @param {any} desc
+     * @param {any} name
+     * @param {any} ozid
+     * @param {any} itemtype
+     * @param {any} condition
+     * @param {any} isnot
+     * @param {any} type
+     * @param {any} value
+     * @param {any} code
+     * @param {any} cont
+     * @param {any} custcnt
+     * @param {any} del
+     * @param {any} seq
+     */
+    this.make_NodeData = function(id, pid, desc, name, ozid, itemtype, condition, isnot, type, value, code, cont, custcnt, del, seq) {
+        var nodeitem = new Object();
+        nodeitem.id = id;
+        nodeitem.pid = pid;
+        nodeitem.desc = desc;
+        nodeitem.name = name;
+        nodeitem.ozid = ozid;
+        nodeitem.itemtype = itemtype;
+        nodeitem.condition = condition;
+        nodeitem.isnot = isnot;
+        nodeitem.type = type;
+        nodeitem.value = value;
+        nodeitem.code = code;
+        nodeitem.cont = cont;
+
+        nodeitem.custcnt = custcnt;
+        nodeitem.del = del;
+        nodeitem.seq = seq;
+        return nodeitem;
+    }
+
+
+    /**
+    *필터 추가 조건으로
+    */
+    this.AddFilter_Cond = function (CondId, CondNm, CondCont, Row) {
+        var rs = true;
+        var desc = CondNm;
+        var Name = CondNm;
+        var ozid = CondId;
+        var itemtype = "CondFilter";
+        var voperator = "";
+        var visnot = "F";
+        var type = "6";  //필터조건
+        var value = CondNm;
+        var code = "";
+        var filtercont = CondId;
+        var Condxml = CondCont;
+      //  var CondXml  = Base64Util.EcubeDecodeString(eCubeAgent, gSelector, CondCont)  '//EnCode되어있는걸 DeCode
+
+        var FilterDoc = parser.parseFromString(Condxml, "text/xml");
+        var Node = ozf_getSelectedSingleNode(FilterDoc, '/LogicOperator');
+
+        this.ConvertOfCondXml(Node);  //지울내용 변환
+        code = (new XMLSerializer()).serializeToString(FilterDoc);
+
+        //filtercont = Base64Util.EcubeEncodeString(eCubeAgent, gSelector, filtercont)   EnCodeing해야함
+        //code = Base64Util.EcubeEncodeString(eCubeAgent, gSelector, code) EnCodeing해야함
+
+        if (Row == 0) {  //신규 등록일경우
+            this.addFilterNode("", desc, Name, ozid, itemtype, voperator, visnot, type, value, code, filtercont, "");
+        } else {   //만약 들어온값과 있던값의 ozid가 같을경우에 수정되도록하려고 Row가 0보다 크면 수정
+            this.MoidFilterNode(Row, desc, value, code, filtercont, voperator, visnot, Name, ozid);
+        }
+
+        return rs;
+    }
+
+
+
+    /**
+    *Node에서 FilterCondt찾아서 내용 지우기
+    */
+    this.ConvertOfCondXml = function (PNode) {
+        var CNodes = PNode.childNodes
+        var Node;
+        var FilterContNode;
+        var NodeNm = "";
+        for (var i = 0; i < CNodes.length; i++) {
+            Node = CNodes[i];
+            NodeNm = Node.nodeName;
+
+            if (NodeNm.equals("LogicOperator")) {
+                this.ConvertOfCondXml(Node);
+            } else if (NodeNm.equals("Condition")) {
+                FilterContNode = ozf_getSelectedSingleNode(Node, "/FilterCont");
+                if (FilterContNode != null) {
+                    FilterContNode.remove();
+                }
+
+            }
+        }
+    }
+
+    /**
+    *필터 추가 Direct방식
+    */
+    this.AddFilter_Direct = function (ozid, Value, Code, row, Oper, vIsNot, vIsCustom, PRow, isAllCont) {
+        if (typeof (oper) === "undefined") oper = "IN";
+        if (typeof (vIsNot) === "undefined") vIsNot = "F";
+        if (typeof (vIsCustom) === "undefined") vIsCustom = "F";
+        if (typeof (PRow) === "undefined") PRow = 0;
+        if (typeof (isAllCont) === "undefined") isAllCont = false;
+
+        var rs = true;
+        var Type = "3" //Direct 방식
+
+        var xml = "";
+        var condition = "";
+        var code_arr = Code.split(this.ExpDelimiter);
+        var value_arr = Value.split(this.ExpDelimiter);
+
+        for (var i = 0; i < code_arr.length; i++) {
+            if (condition.equals("")) {
+                condition = this.MakeCondition(code_arr[i], value_arr[i]);
+            } else {
+                condition += this.MakeCondition(code_arr[i], value_arr[i]);
+            }
+        }
+
+        var itemtype = GetMetaData_GetOzidInfo(ozid, "type");
+        var itemName = GetMetaData_GetOzidInfo(ozid, "name");
+
+        switch (Oper) {
+            case ">":
+                Oper = "&gt;";
+                break;
+            case "<":
+                Oper = "&lt;";
+                break;
+            case "<>":
+                Oper = "&lt;&gt;";
+                break;
+            case "<=":
+                Oper = "&lt;=";
+                break;
+            case ">=":
+                Oper = "&gt;=";
+                break;
+        }
+
+        xml += "<List>";
+        xml += "    <LogicOperator isnot='F' operator='AND'>";
+        xml += "        <Condition edittype='Editor' iscustom='" & vIsCustom & "' isnot='" + vIsNot + "' operator='@OPER@'>";
+        xml += "		    <Editor>";
+        xml += "			    <RefItem Inneroperator='' Leftoperator='' Rightoperator='' itemtype='" + itemtype + "' name='" + itemName + "' ozid='" + ozid + "' />";
+        xml += "		    </Editor>";
+        xml += "	    	<Values>" + condition + "</Values>";
+        xml += "	    </Condition>";
+        xml += "    </LogicOperator>";
+        xml += "</List>";
+
+        xml = xml.replace("&", "&amp;"); // & 표현을 할수없어서 변경 20160727
+        xml = xml.replace("@OPER@", Oper);
+
+
+
+        var FilterDoc = parser.parseFromString(xml, "text/xml");
+        var Cnodes = FilterDoc.getElementsByTagName("Condition");
+
+        for (var i = 0; i < Cnodes.length; i++) {
+            if (isAllCont === false) {  //한번에 넣는것이 아니라면 기본
+                this.AddItem_Explorer(Cnodes[i], row, Type);
+            } else if (isAllCont === true) { //만약에 한번에 넣는것이라면
+                this.AddItem_AllCont(Cnodes[i], row, Type, PRow);
+            }
+        }
+        
+    }
+
+
+
+    /**
+    *value xml 만들기
+    */
+    this.MakeCondition = function (code, nm) {
+        var xml = "";
+
+        xml += "<ValueItem valuetype='codevalue'>";
+        xml += "	<Value>" + nm + "</Value>";
+        xml += "	<Code>" + code + "</Code>";
+        xml += "</ValueItem>";
+        return xml;
+    }
+
+
+    /**
+    * 필터 추가 SQL 방식
+    */
+    this.AddFilter_SQL = function(ozid, Fltid, visnot, oper, SQL_NM, SQL, PostSQL, PreSQL, row, InvMode) {
+        if (typeof (InvMode) === "undefined") InvMode = false;
+
+        var rs = true;
+        var Type = "";
+        if (InvMode === true) {
+            Type = "2_INV"; //인벤토리 고객군 생성시 사용
+        } else {
+            Type = "2";  //SQL 방식
+        }
+
+
+        var xml = "";
+        xml += "<List>";
+        xml += "   <LogicOperator isnot='F' operator='AND'>";
+        xml += "      <Condition isnot='" + visnot + "' operator='" + oper + "'>";
+        xml += "         <Editor>";
+        xml += "            <RefItem ozid='" + ozid + "' fltid = '" + Fltid + "'/>";
+        xml += "         </Editor>";
+        xml += "         <Values>";
+        xml += "            <ValueItem valuetype='sql'>";
+        xml += "               <Value>";
+        xml += "                  <![CDATA[" + SQL_NM + "]]>";
+        xml += "               </Value>";
+        xml += "               <Code>";
+        xml += "                  <![CDATA[" + SQL + "]]>";
+        xml += "               </Code>";
+        xml += "               <Sql_Post>";
+        xml += "                  <![CDATA[" + PostSQL + "]]>";
+        xml += "               </Sql_Post>";
+        xml += "               <Sql_Pre>";
+        xml += "                  <![CDATA[" + PreSQL + "]]>";
+        xml += "               </Sql_Pre>";
+        xml += "            </ValueItem>";
+        xml += "         </Values>";
+        xml += "      </Condition>";
+        xml += "   </LogicOperator>";
+        xml += "</List>";
+
+        var FilterDoc = parser.parseFromString(xml, "text/xml");
+        var CNodeList = FilterDoc.getElementsByTagName("Condition");
+
+        for (var i = 0; i < CNodeList.length; i++) {
+            this.AddItem_Sql(CNodeList[i], row, Type);
+        }
+    }
+
+
+    /**
+    *SQL으로 조건 넣기
+    */
+    this.AddItem_Sql = function (node, row, type) {
+        var name = "";
+        var ozid = "";
+        var visnot = "";
+        var itemtype = "";
+        var viperator = "";
+        var iscustom = "";
+        var value = "";
+        var code = "";
+        var desc = "";
+        var FilterCont = "";
+        var rs = true;
+        var Filterozid = "";
+
+        voperator = node.getAttribute("operator");
+        visnot = node.getAttribute("isnot");
+        var rnode = node.getElementsByTagName('RefItem');
+
+        ozid = rnode[0].getAttribute("ozid");
+        FilterCont = rnode[0].getAttribute("fltid");
+        name = GetMetaData_GetOzidInfo(ozid, "name");
+        itemtype = GetMetaData_GetOzidInfo(ozid, "type");
+
+        var vnodes = node.getElementsByTagName('ValueItem');
+        var vnode;
+        var cnode;
+
+        var sqlpostnode;
+        var sqlprenode;
+        var SqlPost = "";
+        var SqlPre = "";
+
+        for (var i = 0; i < vnodes.length; i++) {
+            vnode = vnodes[i].getElementsByTagName('Value');
+            cnode = vnodes[i].getElementsByTagName('Code');
+
+            if (value.equals("")) {
+                value = vnode[0].textContent.trim();
+                code = cnode[0].textContent.trim();
+            } else {
+                value += ";" + vnode[0].textContent.trim();
+                code += ";" + cnode[0].textContent.trim();
+            }
+
+            sqlpostnode = vnodes[i].getElementsByTagName("Sql_Post");
+            sqlprenode = vnodes[i].getElementsByTagName("Sql_Pre");
+            SqlPost = sqlpostnode[0].textContent.trim();  //선행SQL
+            SqlPre = sqlprenode[0].textContent.trim();    //후행SQL
+
+            if (SqlPost === false) { //선행SQL
+                addExplorerSqlData(FilterCont, "1", SqlPost);
+            }
+
+            if (SqlPre === false) { //후행SQL
+                addExplorerSqlData(FilterCont, "2", SqlPre);
+            }
+        }
+
+        var NotString = "";
+        if (visnot.equals("T")) {
+            NotString = "NOT ";
+        } else if (visnot.equals("F")) {
+            NotString = "";
+        }
+
+        if (type.equals("2_INV")) { //SQL인벤토리 입력일경우
+            var invoper = "";
+            var temp = NotString + voperator;
+
+            if (temp.equals("IN")) {
+                invoper = "포함";
+            } else if (temp.equals("NOT IN")) {
+                invoper = "미포함";
+            }
+            desc = value + " " + invoper;
+        } else {  //Inv 아닐경우는 모두 기존 방식
+            desc = "[" + name + "] " + NotString + voperator + " " + value
+        }
+
+        if (row > 0) {
+            Filterozid = treedataSource[row].ozid;
+
+            if (!Filterozid.equals(ozid)) {
+                row = 0;
+            }
+        }
+        
+        // EnCode FilterCont  ************
+
+        if (row == 0) {  //신규 등록일경우
+            this.addFilterNode("", desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, "");
+        } else {   //만약 들어온값과 있던값의 ozid가 같을경우에 수정되도록하려고 Row가 0보다 크면 수정
+            this.MoidFilterNode(row, desc, value, code, FilterCont, voperator, visnot, name, ozid);
+        }
+
+        return rs;
+    }
+
+
+
+    /**
+    *필터 추가 explorer기본
+    */
+    this.AddFilter = function (Cont, Row) {
+        var rs = true;
+        var Type = "1";
+        var FilterDoc = parser.parseFromString(Cont, "text/xml");
+        var NodeList = FilterDoc.getElementsByTagName("Condition");
+        for (var i = 0; i < NodeList.length; i++) {
+            this.AddItem_Explorer(NodeList[i], Row, Type);
+        }
+        return rs;
+    }
+
+
+    /**
+    *필터 추가 NewFilter에서 사용(Filtering)
+    */
+    this.AddFilter_NewFilter = function (Cont, Row) {
+        var rs = true;
+        var Type = "";
+        var FilterDoc = parser.parseFromString(Cont, "text/xml");
+
+        var CNodeList = FilterDoc.getElementsByTagName("Condition");
+        var ValueType = "";
+
+        for (var i = 0; i < CNodeList.length; i++) {
+
+            var TempNodes = CNodeList[0].getElementsByTagName("Values");
+            ValueType = TempNodes[0].children[0].getAttribute('valuetype');
+
+            if (ValueType.equals("codevalue")) {  
+                Type = "4";    //값입력
+                this.AddItem_Explorer(CNodeList[i], Row, Type);
+            } else if (ValueType.equals("Sql")) {
+                Type = "5";    //Sql입력
+                this.AddItem_NewFilterSql(CNodeList[i], Row, Type);
+            }
+
+        }
+        return rs;
+    }
+
+
+
+
+    /**
+    *NewFilter_SQL으로 조건 넣기
+    */
+    this.AddItem_NewFilterSql = function (node, row, type) {
+        var name = "";
+        var ozid = "";
+        var visnot = "";
+        var itemtype = "";
+        var voperator = "";
+        var iscustom = "";
+        var value = "";
+        var code = "";
+        var desc = "";
+        var FilterCont = "";
+        var rs = true;
+        var Filterozid = "";
+
+        FilterCont = node.textContent;
+        voperator = node.getAttribute('operator');
+        visnot = node.getAttribute('isnot');
+
+        var rnode = ozf_getSelectedSingleNode(node, '/Editor/RefItem');
+        ozid = rnode.getAttribute('ozid');
+
+        name = GetMetaData_GetOzidInfo(ozid, "name");
+        itemtype = GetMetaData_GetOzidInfo(ozid, "type");
+
+       
+        var vnodes = node.getElementsByTagName("ValueItem");
+        var vnode;
+        var cnode;
+
+        for (var i = 0; i < vnodes.length; i++) {
+            vnode = vnodes[i].getElementsByTagName('Value');
+            cnode = vnodes[i].getElementsByTagName('Code');
+
+            if (value.equals("")) {
+                value = vnode[0].textContent.trim();
+                code = cnode[0].textContent.trim();
+            } else { 
+                value += ";" + vnode[0].textContent.trim();
+                code += ";" + cnode[0].textContent.trim();
+            }
+        }
+
+        var NotString = "";
+        if (visnot.equals("T")) {
+            NotString = "NOT ";
+        } else if (visnot.equals("F")) {
+            NotString = "";
+        }
+        
+        desc = "[" + name + "] " + NotString + voperator + " " + value;
+
+        if (row > 0) {
+            Filterozid = treedataSource[row].ozid;
+            if (!Filterozid.equals(ozid)) {
+                row = 0;
+            }
+        }
+
+        if (row <= 0) {
+            var FindozidRow = 0;
+            for (var i = 0; i < treedataSource.length; i++) {
+                if (ozid.equals(treedataSource[i].ozid)) {
+                    FindozidRow = i;
+                    break;
+                }
+            }
+
+            if (FindozidRow > 0) {   //Cancel 작성하여야함 *****
+                var msg = name + " 항목이 이미 등록되어있습니다." + "값을 변경하시겠습니까?";
+                var rs2 = ozf_MsgBoxYesNo(msg, "알림");
+                if (rs2.equals("6")) { //6 : Yes
+                    row = FindozidRow;
+                } else if (rs2.equals("7")) {  // 7 : NO
+                    row = 0;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        // EnCode FilterCont  ************
+
+        if (row == 0) {  //신규 등록일경우
+            this.addFilterNode("", desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, "");
+        } else {   //만약 들어온값과 있던값의 ozid가 같을경우에 수정되도록하려고 Row가 0보다 크면 수정
+            this.MoidFilterNode(row, desc, value, code, FilterCont, voperator, visnot, name, ozid);
+        }
+
+        return rs;
+    }
+
+    /**
+    *ITEM 전체 넣기
+    */
+    this.AddItem_AllCont = function (Node, row, type, Prow) {
+        var name = "";
+        var ozid = "";
+        var itemtype = "";
+        var voperator = "";
+        var visnot = "";
+        var NotString = "";
+        var iscustom = "";
+        var value = "";
+        var code = "";
+        var FilterCont = "";
+        var rs = true;
+        var Filterozid = "";
+
+        FilterCont = node.innerHTML;
+
+        iscustom = node.getAttribute("iscustom");
+        voperator = node.getAttribute("operator");
+        visnot = node.getAttribute("isnot");
+
+        if (visnot.equals("T")) {
+            NotString = "NOT ";
+        } else if (visnot.equals("F")) {
+            NotString = "";
+        }
+        var rNode = Node.getElementsByTagName('RefItem');
+        ozid = rNode[0].getAttribute('ozid');
+        name = rNode[0].getAttribute('name');
+        itemtype = rNode[0].getAttribute('itemtype');
+
+        var vNodes = Node.getElementsByTagName('ValueItem');
+        var vNode;
+        var cNode;
+
+        for (var i = 0; i < vNodes.length; i++) {
+            vnode = vNodes[i].getElementsByTagName('Value');
+            cNode = vNodes[i].getElementsByTagName('Code');
+
+            if (value.equals("")) {
+                if (type.equals("4")) {
+                    value = vnode[0].textContent.trim();
+                    code = cNode[0].textContent.trim();
+                } else {
+                    value = vnode[0].innerHTML.trim();
+                    code = cNode[0].innerHTML.trim();
+                }
+            } else {
+                if (type.equals("4")) {
+                    value += ";" + vnode[0].textContent.trim();
+                    code += ";" + cNode[0].textContent;
+                } else {
+                    value += ";" + vnode[0].innerHTML.trim();
+                    code += ";" + cNode[0].innerHTML.trim();
+                }
+
+            }
+        }
+
+        if (voperator.equals("BETWEEN")) {
+            var value_arr = [];
+            value_arr = value.split(";");
+
+            desc = "[" + name + "] " + NotString + voperator + " " + value_arr[0] + " AND " + value_arr[1];
+        } else if (voperator.equals("IN")) {
+            desc = "[" + name + "] " + NotString + voperator + " " + value.replace(";", ",");
+        } else {
+            desc = "[" + name + "] " + NotString + voperator + " " + value;
+        }
+
+        //FilterCont = ""; //EndCode해야함
+
+        this.addFilterNode(Prow, desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, "");
+    }
+
+
+    /**
+     * Explorer 방식 필터 넣기
+     * @param {any} Node
+     * @param {any} Row
+     * @param {any} Type
+     */
+    this.AddItem_Explorer = function(Node, row, type) {
+        var name = "";
+        var ozid = "";
+        var itemtype = "";
+        var voperator = "";
+        var visnot = "";
+        var NotString = "";
+        var iscustom = "";
+        var value = "";
+        var code = "";
+        var desc = "";
+        var FilterCont = "";
+        var rs = true;
+        var Filterozid = "";
+
+        FilterCont = Node;
+        iscustom = Node.getAttribute('iscustom');
+        voperator = Node.getAttribute('operator');
+        visnot = Node.getAttribute('isnot');
+
+        if (visnot.equals("T")) {
+            NotString = "NOT ";
+        } else {
+            NotString = "";
+        }
+
+        var rNode = Node.getElementsByTagName('RefItem');
+
+        ozid = rNode[0].getAttribute('ozid');
+        name = rNode[0].getAttribute('name');
+        itemtype = rNode[0].getAttribute('itemtype');
+
+        var vNodes = Node.getElementsByTagName('ValueItem');
+        var vNode;
+        var cNode;
+
+        for (var i = 0; i < vNodes.length; i++) {
+            vnode = vNodes[i].getElementsByTagName('Value');
+            cNode = vNodes[i].getElementsByTagName('Code');
+
+            if (value.equals("")) {
+                if (type.equals("4")) {
+                    value = vnode[0].textContent.trim();
+                    code = cNode[0].textContent.trim();
+                } else {
+                    value = vnode[0].innerHTML.trim();
+                    code = cNode[0].innerHTML.trim();
+                }
+            } else {
+                if (type.equals("4")) {
+                    value += ";" + vnode[0].textContent.trim();
+                    code += ";" + cNode[0].textContent;
+                } else {
+                    value += ";" + vnode[0].innerHTML.trim();
+                    code += ";" + cNode[0].innerHTML.trim();
+                }
+                
+            }
+        }
+
+
+        if (voperator.equals("BETWEEN")) {
+            var value_arr = [];
+            value_arr = value.split(";");
+
+            desc = "[" + name + "] " + NotString + voperator + " " + value_arr[0] + " AND " + value_arr[1];
+
+        } else if (voperator.equals("IN")) {
+            desc = "[" + name + "] " + NotString + voperator + " " + value.replace(";", ",");
+        } else {
+            desc = "[" + name + "] " + NotString + voperator + " " + value;
+        }
+
+        if (row > 0) {
+            Filterozid = treedataSource[row].ozid;   //수정해야할지 모름 ****
+            if (!Filterozid.equals(ozid)) {
+                row = 0;
+            }
+        }
+
+        if (row <= 0) {
+            var FindozidRow = 0;
+
+            for (var i = 0; i < treedataSource.length; i++) {
+                if (ozid.equals(treedataSource[i].ozid)) {
+                    FindozidRow = i;
+                    break;
+                }
+            }
+
+            if (FindozidRow > 0) {   //Cancel 작성하여야함 *****
+                var msg = name + " 항목이 이미 등록되어있습니다." + "값을 변경하시겠습니까?";
+                var rs2 = ozf_MsgBoxYesNo(msg, "알림");
+                if (rs2.equals("6")) { //6 : Yes
+                    row = FindozidRow;
+                } else if (rs2.equals("7")) {  // 7 : NO
+                    row = 0;
+                } else {
+                    return false;
+                }
+
+            }
+        }
+        // EnCode FilterCont **************
+        
+        if (row == 0) {  //신규 등록일경우
+            this.addFilterNode("", desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, "");
+        } else {   //만약 들어온값과 있던값의 ozid가 같을경우에 수정되도록하려고 Row가 0보다 크면 수정
+            this.MoidFilterNode(row, desc, value, code, FilterCont, voperator, visnot, name, ozid);
+        }
+    }
+
+
+
+    /**
+    *필터값 수정
+    */
+    this.MoidFilterNode = function (Row, Desc, value, code, FilterCont, voperator, visnot, vName, vOzid) {
+        var rs = true;
+
+        treedataSource[Row].desc = Desc;
+        treedataSource[Row].name = vName;
+        treedataSource[Row].ozid = vOzid;
+        treedataSource[Row].condition = voperator;
+        treedataSource[Row].isnot = visnot;
+        treedataSource[Row].value = value;
+        treedataSource[Row].code = code;
+        treedataSource[Row].FilterCont = FilterCont;
+        ctlexplorerfilter.option('dataSource', treedataSource);
+        ctlexplorerfilter.repaint();
+        return rs;
+
+    }
+
+    /**
+     * 필터 트리에 값 넣기
+     * @param {any} pid  상위id
+     * @param {any} desc
+     * @param {any} name
+     * @param {any} ozid
+     * @param {any} itemtype
+     * @param {any} voperator
+     * @param {any} visnot
+     * @param {any} type
+     * @param {any} value
+     * @param {any} code
+     * @param {any} FilterCont
+     * @param {any} CustCnt
+     */
+    this.addFilterNode = function(pid, desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, CustCnt) {
+
+        var r = 0;
+        var sType = "";
+        var del = "";
+        if ((ozid.equals("")) && (itemtype.equals("Filter"))){
+            ozid = this.MakeFilterozid();
+        }
+
+        var seq = this.FindMaxSeq();
+
+        if (!itemtype.equals("Filter")) {
+            //img ******************\
+            del = "삭제";
+
+        }
+
+        if (pid.equals("")) {   //상위 id가 없다면 신규등록
+            pid = "1";
+            this.additem(pid, desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, CustCnt, del, seq);
+        } else {
+            if (!itemtype.equals("Filter")) {
+                //img ******************\
+                del = "삭제";
+
+            }
+            this.additem(pid, desc, name, ozid, itemtype, voperator, visnot, type, value, code, FilterCont, CustCnt, del, seq);
+
+            if (type.equals("2_INV")) {
+                //img   **************
+            } else {
+                //img *************
+            }
+
+
+        }
+        return seq;
+    }
+
+
+    /**
+    *신규 Data ADD
+    */
+    this.additem = function (pid, desc, name, ozid, itemtype, condition, isnot, type, value, code, cont, custcnt, del, seq) {
+        var id = ozid;
+        var nodeitem = this.make_NodeData(seq, pid, desc, name, ozid, itemtype, condition, isnot, type, value, code, cont, custcnt, del, seq);
+        treedataSource.push(nodeitem);
+        ctlexplorerfilter.option('dataSource', treedataSource);
+        ctlexplorerfilter.repaint();
+    }
+
+
+    /**
+    *최대값 찾기
+    */
+    this.FindMaxSeq = function () {
+        var MaxSeq = 0;
+        var seq = 0;
+        var tempdata = "";
+        for (var i = 0; i < treedataSource.length; i++) {
+            tempdata = treedataSource[i].seq;
+
+            if (tempdata.length == 0) {
+                seq = 0;
+            } else {
+                seq = parseInt(tempdata);
+            }
+
+            if (seq > MaxSeq) {
+                MaxSeq = seq;
+            }
+        }
+        MaxSeq++;
+        return MaxSeq;
+    }
+
+
+    /**
+     * 필터 (AND, OR, 등 )에는 ozid가 없기때문에 특정문자를 만들기 위해서
+     * dll에서는 2번째 컬럼(ozid) , 3번째 컬럼(itemType)MakeFilterozid(2,3) 으로 넘김 고정값
+     */
+    this.MakeFilterozid = function() {
+        var FilterOzid = "";
+        var temp = "";
+        var count = 0;
+        var mCount = 0;
+
+        var temp = "";
+        for (var i = 0; i < treedataSource.length; i++) {
+            temp = treedataSource[i].itemtype;
+            if (temp.equals("Filter")) {
+                temp = treedataSource[i].ozid;
+                temp = temp.replace("Filter_", "");
+                mCount = parseInt(temp);
+                if (mCount >= count) {
+                    count = mCount;
+                } 
+
+            }
+        }
+        count++;
+        FilterOzid = "filter_" + count.toString();
+        return FilterOzid;
+    }
+
+
+
+
+    /**
+    *SQL만들기
+    *Type Final : 최종 조회 ,   Step : 단계별 조회
+    */
+    this.GetSQL = function (vType) {
+        var Sql = "";
+
+        if (treedataSource.length > 1) {  
+
+            //필터에서 메져 사용했는지 여부
+            var vFilterMeasureUse = this.FilterMeasureUse();
+
+            var ItemRankUse = false;
+            if (!this.ItemRank.equals("")) {
+                ItemRankUse = true;
+            }
+
+            //필터에 메져를 사용중이면서 정렬을 사용한다면 불가능하므로 Stop
+            if ((vFilterMeasureUse == true) && (ItemRankUse == true)) {
+                Sql = "";
+                alert("필터로 메져를 사용하면서 정렬을 사용 할 수 없습니다.");
+                return Sql;
+            }
+
+            //필수조건이 값이 있을경우 필수 조건 체크
+            if (!vNecessaryItem.equals("")) {
+                var RsNecessary = this.CheckNecessaryItem();
+                if (RsNecessary == false) {
+                    return Sql;
+                }
+            }
+
+            this.GetReportContent();
+            var rs = this.GetFilterXML();
+            if (rs == false) {
+                return Sql;
+            }
+            var RankExist = this.SetItemRank(); //Rank 사용여부 (Rank가 사용된경우 XML수정)
+
+            if (vType.equals("Step")) {
+                SQL = this.MakeSQL_Step(RankExist);  //단계별조회 만들어야함  ************
+            } else if (vType.equals("Final")) {
+                var InstanceID = "";
+                var vReportozid = this.Reportozid;
+                var vReportcont = this.ReportCont;
+                
+                var vCubeozid = this.Cubeozid;
+                InstanceID = GetMetaData_GetInstanceID(vReportozid, vReportcont, vCubeozid);
+                Sql = this.GetReportSQL(InstanceID, RankExist);
+            }
+
+        } else {
+            alert("조건을 선택해 주세요");
+        }
+
+        Sql = Sql.replace(/"/gi, '\\"');
+        return Sql;
+    }
+
+
+    /**
+    *SQL만들기
+    */
+    this.GetReportSQL = function (instanceid, RankExist) {
+        var meta = "";
+        var vPurpose = "ReportContent";
+        var vAddress = "<List><Item address='" + this.Reportozid + "' instanceid='" + instanceid + "'/></List>";
+        var vOption = "";
+        var metaXML = "";
+        var sql = "";
+        if (RankExist == true) {  //Rank가 있다면
+            vOption = "<List><Option informationonlywithorder='T'/></List>";
+        } else {  //Rank가 없다면
+            vOption = "<List><Option informationonly='T'/></List>";
+        }
+        
+        meta = ozf_OLAPHandler(vPurpose, vAddress, vOption, false);
+        metaXML = parser.parseFromString(meta, "text/xml");
+        var SNode = ozf_getSelectedSingleNode(metaXML, "/List/ServiceContent");
+        var vdbServer = SNode.getAttribute('dbname');
+        this.DBServer = vdbServer;
+
+        var sqlNode = ozf_getSelectedSingleNode(metaXML, "/List/ServiceContent/ExecutionItems/Sql");
+        sql = sqlNode.textContent;
+
+        return sql;
+    }
+
+    /**
+    *FilterXML만들기           *********** 작업해야함
+    */
+    this.GetFilterXML = function () {
+        var rs = true;
+        var ozid = "";
+        var xml = "";
+        var xDoc;
+        var PivotXml = "";
+        var PivotItem = "";
+        
+        var MainDoc = parser.parseFromString(this.ReportCont, "text/xml");
+        var FNode = MainDoc.getElementsByTagName('Filter')[0];
+        FNode.children[0].remove();
+        
+        xml = this.MakeFilterXML(0);  //xml만들어오기
+        var DoNotDisplayFilterxml = "";
+        if (DoNotDisplayFilterList.length > 0) {  //보이지 않는 필터가 있을경우 필터를 먼저 넣어준다
+            DoNotDisplayFilterxml = this.MakeDoNotDisplayFilterXML();
+            xml = DoNotDisplayFilterxml.replace("@FILTERXML@", xml);
+        }
+
+        var SubDoc = parser.parseFromString(xml, "text/xml");
+        var addNode = ozf_getSelectedSingleNode(SubDoc, "/LogicOperator");
+
+        var tempNode = MainDoc.importNode(addNode, true);
+        FNode.appendChild(tempNode);
+
+        var temp = (new XMLSerializer()).serializeToString(MainDoc);
+        this.ReportCont = temp;
+
+        this.ReportCont = ConverterXML_ConverterXML(this.ReportCont);  //****************** 작업중
+
+
+        if (temp.equals("")) {
+            rs = false;
+            this.ReportCont = temp;
+        }
+        return rs;
+    }
+
+
+
+    /**
+    * 보이지 않는 필터 xml 만들기
+    */
+    this.MakeDoNotDisplayFilterXML = function () {
+        var xml = "";
+        var ConditionXML = "";
+        var sName = "";
+        var sOzid = "";
+        var sItemType = "";
+        var sCondition = "";
+        var sIsnot = "";
+        var sValue = "";
+        var sCode = "";
+        var sFullPath = "";
+        var sIsSql = "";
+        var ValueType = "";
+
+        xml = "<LogicOperator isnot='F' operator='AND'>";
+
+        for (var i = 0; i < DoNotDisplayFilterList.length; i++) {
+            sName = DoNotDisplayFilterList[i].vName;
+            sOzid = DoNotDisplayFilterList[i].vOzid;
+            sItemType = DoNotDisplayFilterList[i].vItemType;
+            sCondition = DoNotDisplayFilterList[i].vCondition;
+            sIsnot = DoNotDisplayFilterList[i].vIsnot;
+            sValue = DoNotDisplayFilterList[i].vValue;
+            sCode = DoNotDisplayFilterList[i].vCode;
+            sFullPath = DoNotDisplayFilterList[i].vAddress;
+            sIsSql = DoNotDisplayFilterList[i].vIsSql;
+
+            switch (sCondition) {
+                case ">" :
+                     sCondition = "&gt;";
+                     break;
+                case "<":
+                    sCondition = "&lt;";
+                    break;
+                case "<>":
+                    sCondition = "&lt;&gt;";
+                    break;
+                case "<=":
+                    sCondition = "&lt;=";
+                    break;
+                case ">=":
+                    sCondition = "&gt;=";
+                    break;
+            }
+            
+            if (sIsSql.equals("False")) {
+                ValueType = "codevalue";
+            } else if (sIsSql.equals("True")){
+                ValueType = "sql";
+            }
+
+            var tempvalue = Me.makeValue(sCondition, sValue, sCode, ValueType);
+
+            ConditionXML += "<Condition edittype='Editor' iscustom='T' isnot='" + sIsnot + "' operator='" + sCondition + "'>"
+            ConditionXML += "<Editor>"
+            ConditionXML += "<RefItem Inneroperator='' Leftoperator='' Rightoperator='' itemtype='" + sItemType + "' name='" + sName + "' ozid='" + sOzid + "' contentfullpath='" + sFullPath + "'/>"
+            ConditionXML += "</Editor>"
+            ConditionXML += tempvalue;
+            ConditionXML += "</Condition>"
+        }
+
+        xml += ConditionXML + "@FILTERXML @ </LogicOperator > ";
+        return xml;
+    }
+
+
+    /**
+    *필터부분 XML
+    */
+    this.MakeFilterXML = function (row) {
+        var xml = "";
+        var sName = "";
+        var sOzid = "";
+        var sItemType = "";
+        var sCondition = "";
+        var sIsnot = "";
+        var stype = "";
+        var sValue = "";
+        var sCode = "";
+        var sFullPath = "";
+        var sValueType = "";
+        var spid = "";
+        var sid = "";
+
+        spid = treedataSource[row].pid;
+        sid = treedataSource[row].id;
+        sName = treedataSource[row].name;
+        sOzid = treedataSource[row].ozid;
+        sItemType = treedataSource[row].itemtype;
+        sCondition = treedataSource[row].condition;
+
+        if (sCondition.equals(">")) {
+            sCondition = "&gt;";
+        } else if (sCondition.equals("<")) {
+            sCondition = "&lt;";
+        } else if (sCondition.equals("<>")) {
+            sCondition = "&lt;&gt;";
+        } else if (sCondition.equals("<=")) {
+            sCondition = "&lt;=";
+        } else if (sCondition.equals(">=")) {
+            sCondition = "&gt;=";
+        }
+
+        sIsnot = treedataSource[row].isnot;
+        stype = treedataSource[row].type;
+        sValue = treedataSource[row].value;
+        sCode = treedataSource[row].code;
+
+        if (stype.equals("2")) { //상세조건추가시 에만 sql입력이므로
+            sValueType = "sql";
+        } else if (stype.equals("2_INV")) {
+            sValueType = "sql";
+        } else if (stype.equals("5")) {
+            sValueType = "sql";
+        } else {
+            sValueType = "codevalue";
+        }
+
+
+        if (sItemType.equals("Filter")) {
+            xml += "<LogicOperator isnot='" + sIsnot + "' operator='" + sCondition + "'>";
+            var temp_pid = "";
+            var tempxml = "";
+            for (var i = 0; i < treedataSource.length; i++) {
+                temp_pid = treedataSource[i].pid;
+                if (sid == temp_pid) {
+                    tempxml = this.MakeFilterXML(i);
+                    xml += tempxml;
+                }
+            }
+            xml += "</LogicOperator>";
+        } else if (sItemType.equals("CondFilter")) {  //조건 필터
+            //sCode = Base64Util.EcubeDecodeString(eCubeAgent, gSelector, sCode)  '//EnCode되어있는걸 DeCode
+            xml = sCode;
+        } else {
+            var tempxml = this.GetItem(sOzid);
+            var xmlDoc = parser.parseFromString(tempxml, "text/xml");
+            var Lnode = ozf_getSelectedSingleNode(xmlDoc, "/List");
+
+            if (Lnode.children.length > 0) {
+                sFullPath = Lnode.children[0].getAttribute('address');
+            }
+            
+            var valuexml = this.makeValue(sCondition, sValue, sCode, sValueType);
+            xml += "<Condition edittype='Editor' iscustom='T' isnot='" + sIsnot + "' operator='" + sCondition + "'>";
+            xml += "<Editor>";
+            xml += "<RefItem Inneroperator='' Leftoperator='' Rightoperator='' itemtype='" + sItemType + "' name='" + sName + "' ozid='" + sOzid + "' contentfullpath='" + sFullPath + "'/>";
+            xml += "</Editor>";
+            xml += valuexml;
+            xml += "</Condition>";
+        }
+        return xml;
+    }
+
+    /**
+    *  value 값 만들기
+    */
+    this.makeValue = function (sCondition, sValue, sCode, sValueType) {
+        var xml = "<Values>";
+        var values;
+        var Codes;
+
+        if (sCondition.equals("BETWEEN")) {
+            values = sValue.split(";");
+            Codes = sCode.split(";");
+        } else {
+            if (sValueType.equals("sql")) {
+                values = sValue.split(";");
+                Codes = sCode.split(";");
+
+                for (var i = 0; i < values.length; i++) {
+                    values[i] = values[i].replace(">", "&gt;").replace("<", "&lt;");
+                    Codes[i] = Codes[i].replace(">", "&gt;").replace("<", "&lt;");
+                }
+            } else {
+                values = sValue.replace("'", "").split(";");
+                Codes = sCode.replace("'", "").split(";");
+            }
+        }
+
+        var valueitem = "";
+        for (var j = 0; j < values.length; j++) {
+            valueitem = valueitem + this.MakeValueItem(values[j].replace("&", "&amp;"), Codes[j], sValueType);
+        }
+        xml += valueitem + "</Values>";
+        return xml
+    }
+
+    /**
+    *ValueItem만들어오기
+    */
+    this.MakeValueItem = function (value, code, ValueType) {
+        var ValueItemXML = "";
+        ValueItemXML += "<ValueItem valuetype='" + ValueType + "'> ";
+        ValueItemXML += "   <Code>" + code + "</Code>";
+        ValueItemXML += "   <Value>" + value + "</Value>";
+        ValueItemXML += "</ValueItem>";
+        return ValueItemXML;
+    }
+
+    /**
+    *필수조건 체크
+    */
+    this.CheckNecessaryItem = function () {
+        var rs = true;
+        var NecessaryItem_arr = new [];
+        NecessaryItem_arr = vNecessaryItem.split(this.ExpDelimiter);
+        var item_ozid = "";
+        var ExistItem = false;
+
+        var item_name = "";
+
+        var tempozid = "";
+
+        for (var i = 0; i < NecessaryItem_arr.length; i++) {
+            item_ozid = NecessaryItem_arr[i];
+            item_name = GetMetaData_GetOzidInfo(item_ozid, "name");
+
+            ExistItem = false;
+
+            for (var j = 1; j < treedataSource.length; j++) {
+                tempozid = treedataSource[j].ozid;
+                if (item_ozid.equals(tempozid)) {
+                    ExistItem = true;
+                    break;
+                }
+            }
+
+            if (ExistItem === false) {
+                var msg = item_name + " 항목은 필수 조건입니다.";
+                ozf_MsgBoxEx(msg, "0", "알림");
+                rs = false
+                break;
+            }
+        }
+        return rs;
+    }
+
+
+    /**
+    * Explorer에서 Measure를 사용하였는지 체크
+    */
+    this.FilterMeasureUse = function () {
+        var MUse = false;
+        var MCnt = 0;
+        var vItemType = "";
+
+        for (var i = 0; i < treedataSource.length; i++) {
+            vItemType = treedataSource[i].itemtype.toUpperCase();
+            if (vItemType.equals("MEASURE")) {
+                MCnt++;
+            } else if (vItemType.equals("CONDFILTER")) {  //조건 필터일경우 XML조회 해야하므로
+                var xml = treedataSource[i].code;
+                var temprs = this.MesureUseInXml(xml);
+                if (temprs === true) {
+                    MCnt++;
+                }
+            }
+        }
+        if (MCnt > 0) {
+            MUse = true;
+        }
+        return MUse;
+    }
+
+
+
+    /**
+    *사용자정의 Filter에서 메져를 사용하였을경우 True Return
+    */
+    this.MesureUseInXml = function (xml) {
+        var rs = false;
+        //xml = Base64Util.EcubeDecodeString(eCubeAgent, gSelector, xml)  '//EnCode되어있는걸 DeCode
+        
+        var MainDoc = parser.parseFromString(xml, "text/xml");
+        var Nodes = MainDoc.getElementsByTagName("LogicOperator");
+        var Node;
+
+        for (var i = 0; i < Nodes.length; i++) {
+            Node = Nodes[i];
+            rs = this.UseMeasure(Node);
+        }
+        return rs;        
+    }
+
+    /**
+    *xml에서 ItemType를 보고 메져가 포함되어있는지 체크
+    */
+    this.UseMeasure = function (Node) {
+        var CNode;
+        var MUse = false;
+        var ENode;
+        var vItemType = "";
+        for (var i = 0; i < Node.children.length; i++) {
+            CNode = Node.children[i];
+
+            if (CNode.nodeName.equals("Condition")) {  //조건일경우
+                ENode = ozf_getSelectedSingleNode(MainDoc, "Editor/RefItem");
+                vItemType = ENode.getAttribute("itemtype");
+
+                if (vItemType.equals("Measure")) {
+                    MUse = true;
+                    return MUse;
+                }
+            } else if (CNode.nodeName("LogicOperator")) {
+                MUse = this.UseMeasure(CNode);
+                if (MUse === true) {
+                    return MUse;
+                }
+            }
+        }
+        return MUse;
+    }
+
+        
+    /**
+    * address 를 가지고서 항목 조회하기
+    */
+    this.GetItem = function (add) {
+        var sList = "";
+        sList = GetMetaData_GetItemInfo(add);
+        return sList;
+    }
+      
+    /**
+    *정렬항목 설정
+    */
+    this.SetItemRank = function () {
+        var item = this.ItemRank;
+        var RankExist = false;
+
+        if (item.equals("")) {
+            RankExist = false;
+            return RankExist;
+        } else {
+            RankExist = true;
+        }
+
+        var Items_Arr = item.split("!@#");
+        var ItemOzid = "";
+        var ItemName = "";
+        var ItemType = "";
+        var ItemOrderNm = "";
+        var ItemOrderCd = "";
+        var items;
+
+        var TempRankXml = "";
+        var xml = "";
+        var Rankxml = "";
+
+        var temp = "";
+        for (var i = 0; i < Items_Arr.length; i++) {
+            temp = Items_Arr[i];
+
+            items = temp.split(";");
+            ItemOzid = items[0];
+            ItemName = items[1];
+            ItemType = items[2];
+            ItemOrderNm = items[3];
+            ItemOrderCd = items[4];
+            xml = "<RankItem itemtype='" + ItemType + "' ozid='" + ItemOzid + "' name='" + ItemName + "' method='" + ItemOrderCd + "'/>";
+            Rankxml += xml;
+        }
+        Rankxml = "<List>" + Rankxml + "</List>";
+        this.SetRank(Rankxml);
+        return RankExist;
+    }
+
+
+
+    /**
+    *RankXml 설정하기
+    */
+    this.SetRank = function (RankXml) {
+        var TempReportCont = this.ReportCont;
+
+        var MainDoc = parser.parseFromString(TempReportCont, "text/xml");
+        var Rnode = ozf_getSelectedSingleNode(MainDoc, '/List/ListReport/Ranks');
+        var CCnt = Rnode.children.length;
+        if (CCnt > 0) {
+            Rnode.children[0].remove();
+        }
+
+        var vAttribute = "isdistinct";
+        var HasAttribute = Rnode.hasAttribute(vAttribute);
+        if (HasAttribute === false) {
+            Rnode.setAttribute("isdistinct", "T");
+        }
+
+        var RankDoc = parser.parseFromString(RankXml, "text/xml");
+
+        var tmpNode;
+        var addNodeList = RankDoc.getElementsByTagName("RankItem");
+        var addNode;
+
+        for (var i = 0; i < addNodeList.length; i++) {
+            addNode = addNodeList[i];
+            tmpNode = MainDoc.importNode(addNode, true);
+            Rnode.appendChild(tmpNode);
+        }
+        this.ReportCont = (new XMLSerializer()).serializeToString(MainDoc);
+    }
+
+
+    /**
+    *쿼리 만들기 단계별    *********** 계속 작업하여야함
+    */
+    this.MakeSQL_Step = function (RankExist) {
+        var rsSQL = "";
+        var SQL = "";
+        var Stempxml = "";
+        var Step_xDoc;
+
+        var RootOper = "";
+        var RootType = "";
+
+        var TempReportCont = this.ReportCont;
+
+        RootOper = treedataSource[0].name;
+        RootType = treedataSource[0].itemType;
+
+        if ((RootType.equals("Filter")) && RootType.equals("AND")) {
+
+        } else {
+            var msg = "최상의 조건이 AND일경우에만 단계별 조회가 가능합니다.";
+            ozf_MsgBoxEx(msg, "0", "알림");
+            return "";
+        }
+
+        var Stepxml = this.ReportCont; //전체 xml 
+        var Step_xDoc = parser.parseFromString(Stepxml, "text/xml");
+
+        var index = 0;
+
+
+        //var Lnode = ozf_getSelectedSingleNode(xmlDoc, "/List");
+
+
+        //Step_xDoc.LoadXml(Me.ReportCont
+
+        //var index = 0;
+
+
+    }
+
+
+    /**
+    *숨겨진 필터 삭제
+    */
+    this.DoNotDisplayFilterClear = function () {
+        DoNotDisplayFilterList = [];
+    }
+
+
+
+    /**
+    * DoNotDisplayFilter
+    */
+    this.DoNotDisplayFilter = function (ozid, Condition, Value, IsSql) {
+        if (typeof (IsSql) === "undefined") IsSql = false;
+
+        var vName = "";
+        var vOzid = "";
+        var vItemType = "";
+        var vCondition = "";
+        var vIsnot = "";
+        var vValue = "";
+        var vCode = "";
+        var vAddress = "";
+
+        vName = GetMetaData_GetOzidInfo(ozid, "name");
+        vOzid = ozid;
+        vItemType = GetMetaData_GetOzidInfo(ozid, "type");
+        vValue = Value;
+        vCode = Value;
+        vAddress = GetMetaData_GetOzidInfo(ozid, "address");
+        if (Condition.toUpperCase().indexOf("NOT") >= 0) { //not이 있을경우
+            vCondition = Condition.toUpperCase().replace("NOT", "").trim();
+            vIsnot = "T";
+        } else {
+            vCondition = Condition;
+            vIsnot = "F";
+        }
+        this.addDoNotDisplayFilter(vName, vOzid, vItemType, vCondition, vIsnot, vValue, vCode, vAddress, IsSql);
+    }
+
+
+    /**
+    *선후행 쿼리 정보
+    */
+    this.addExplorerSqlData = function (fltid, flttype, fltCont) {
+        var ExplorerSqlData = new object();
+        ExplorerSqlData.fltid = fltid;
+        ExplorerSqlData.flttype = flttype;
+        ExplorerSqlData.fltCont = fltCont;
+
+        ExplorerSqlDataList.push(ExplorerSqlData)
+    }
+
+    /**
+    *보이지 않는 필터 넣기
+    */
+    this.addDoNotDisplayFilter = function (Name, ozid, ItemType, Condition, Isnot, value, code, address, issql) {
+        var donotdisplayfilterdata = new Object();
+        donotdisplayfilterdata.name = Name;
+        donotdisplayfilterdata.ozid = ozid;
+        donotdisplayfilterdata.ItemType = ItemType;
+        donotdisplayfilterdata.Condition = Condition;
+        donotdisplayfilterdata.Isnot = Isnot;
+        donotdisplayfilterdata.value = value;
+        donotdisplayfilterdata.code = code;
+        donotdisplayfilterdata.address = address;
+        donotdisplayfilterdata.issql = issql;
+
+        DoNotDisplayFilterList.push(donotdisplayfilterdata);
+    }
+
+
+    
+    /**
+    * 고객수 넣기
+    */
+    this.SetCustCnt = function (Cnt) {
+        var Cnt_arr = Cnt.split(";");
+        var CustCnt = "";
+        this.ClearCustCnt(); //모든 고객수 초기화
+
+        var RootOzid = "";
+        var PRow = 0;
+
+        if (Cnt_arr.length == 1) {  //만약 조회 결과값이 하나만 있을경우
+            CustCnt = ozf_FormatNumber(Cnt);
+            treedataSource[treedataSource.length - 1].custcnt = CustCnt;
+        } else {  //조회 결과값이 여러개일경우 단계별 조회
+            var rootid = "1";
+            var pid = "";
+            var cnt = 0;
+            var tempCnt = "";
+
+            var k = 0;
+            for (var i = 0; i < Cnt_arr.length; i++) {
+                tempCnt = Cnt_arr[i];
+
+                CustCnt = ozf_FormatNumber(tempCnt);
+
+
+                for (var j = k; j < treedataSource.length; j++) {
+                    pid = treedataSource[j].pid;
+                    if (pid == rootid) {
+                        treedataSource[j].custcnt = CustCnt;
+                        k = j + 1;
+                        break;
+                    }
+                }
+            }    
+        }
+
+        //ctlexplorerfilter.option('dataSource', treedataSource);
+        //ctlexplorerfilter.repaint();
+    }
+
+
+    /**
+    *고객수 초기화
+    */
+    this.ClearCustCnt = function () {
+        for (var i = 1; i < treedataSource.length; i++) {
+            treedataSource[i].custcnt = "";
+        }
+        ctlexplorerfilter.option('dataSource', treedataSource);
+        ctlexplorerfilter.repaint();
+    }
+
+
+
+    /**
+    *xml Import
+    */
+    this.ImportXML = function (content) {
+        //var pdata = decode  //deCode해야함  ********************************
+        var pdata = content;
+        treedataSource = [];
+
+        var MainDoc = parser.parseFromString(pdata, "text/xml");
+
+        //필터 넣기
+        var FilterRs = false;
+        var Fnode = ozf_getSelectedNodes(MainDoc, "/LogicOperator");
+        FilterRs = this.setFilter(Fnode, "");
+    }
+
+
+    /**
+    *필터 값 넣기
+    */
+    this.setFilter = function (nodes, UpOzid) {
+        var custcnt = "";
+        if (UpOzid.equals("")) {
+            UpOzid = "0";
+            custcnt = "조회건수";
+        }
+        
+        var rs = true;
+        var sDesc = "";
+        var sName = "";
+        var sOzid = ""; 
+        var sItemType = "";
+        var sCondition = "";
+        var sIsNot = "";
+        var sType = "";
+        var sValue = "";
+        var sCode = "";
+        var sFilterCont = "";
+        var NextXml;
+        var nodeName = "";
+        var node;
+        for (var i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+            nodeName = node.nodeName;
+            if (nodeName.equals("LogicOperator")) {
+                sCondition = node.getAttribute("operator");
+                sIsNot = node.getAttribute("isnot");
+
+                if (sIsNot.equals("T")) {
+                    sDesc = "NOT " + sCondition;
+                } else {
+                    sDesc = sCondition;
+                }
+
+                sName = sCondition;
+                sType = "Filter";
+                sOzid = "";
+                sValue = "";
+                sCode = "";
+                UpOzid = this.addFilterNode(UpOzid, sDesc, sName, sOzid, sType, sCondition, sIsNot, "", sValue, sCode, "", custcnt);
+                NextXml = node.childNodes;
+                rs = this.setFilter(NextXml, UpOzid);
+            } else if (nodeName.equals("Condition")) {
+
+                sCondition = node.getAttribute("operator");
+                sIsNot = node.getAttribute("isnot");
+                sType = node.getAttribute("Type");
+
+                var Rnode = ozf_getSelectedSingleNode(node, "/Editor/RefItem");
+                sItemType = Rnode.getAttribute("itemtype");
+                sName = Rnode.getAttribute("name");
+                sOzid = Rnode.getAttribute("ozid");
+
+                var Vnode = ozf_getSelectedSingleNode(node, "/Values");
+
+                sValue = this.getItemAttr(Vnode, "Value");
+                sCode = this.getItemAttr(Vnode, "Code");
+                sDesc = ozf_getSelectedSingleNode(node, "/Values/ValueItem/Desc").textContent;
+                sFilterCont = ozf_getSelectedSingleNode(node, "/FilterCont").textContent;
+
+                this.addFilterNode(UpOzid, sDesc, sName, sOzid, sItemType, sCondition, sIsNot, sType, sValue, sCode, sFilterCont, "");
+            }
+        }
+
+        return rs;
+    }
+
+
+    /**
+    * VAlue 및 Code값 가져오기
+    */
+    this.getItemAttr = function (xml, type) {
+        var rs = "";
+        var nodes = xml.getElementsByTagName("ValueItem");
+        var sCode = "";
+        var sValue = "";
+
+        var tempNode;
+        var tempCNode;
+        var tempVNode;
+
+        for (var i = 0; i < nodes.length; i++) {
+            tempNode = nodes[i];
+            tempCNode = ozf_getSelectedSingleNode(tempNode, "/Code");
+            tempVNode = ozf_getSelectedSingleNode(tempNode, "/Value");
+
+            if (sCode.equals("")) {
+                if (tempCNode != null) {
+                    sCode = tempCNode.textContent;
+                }
+                if (tempVNode != null) {
+                    sValue = tempVNode.textContent;
+                }
+            } else {
+                if (tempCNode != null) {
+                    sCode += "," + tempCNode.textContent;
+                }
+                if (tempVNode != null) {
+                    sValue += "," + tempVNode.textContent;
+                }
+            }
+        }
+
+        if (type.equals("Value")) {
+            rs = sValue;
+        } else if (type.equals("Code")) {
+            rs = sCode;
+        }
+        return rs;
+    }
+
+    
+    /**
+    *저장용 XML 가져오기
+    */
+    this.ExportXml = function () {
+        var xml = "";
+        xml = this.FilterXml(0);
+        var pdata = xml;
+        //pdata = Base64Util.EcubeEncodeString(eCubeAgent, gSelector, xml) encode ******************
+        return pdata;
+    }
+
+
+    /**
+    *필터 xml만들기     ***********************
+    */
+    this.FilterXml = function(row){
+        var xml = "";
+        var sDesc = "";
+        var sName = "";
+        var sOzid = "";
+        var sItemType = "";
+        var sCondition = "";
+        var sIsNot = "";
+        var sType = "";
+        var sValue = "";
+        var sCode = "";
+        var sFilterCont = "";
+        var sid = "";
+
+        sid = treedataSource[row].id;
+        sDesc = treedataSource[row].desc;
+        sName = treedataSource[row].name;
+        sOzid = treedataSource[row].ozid;
+        spid = treedataSource[row].pid;
+        sItemType = treedataSource[row].itemtype;
+        sCondition = treedataSource[row].condition;
+
+
+        switch (sCondition) {
+            case ">":
+                sCondition = "&gt;";
+                break;
+            case "<":
+                sCondition = "&lt;";
+                break;
+            case "<>":
+                sCondition = "&lt;&gt;";
+                break;
+            case "<=":
+                sCondition = "&lt;=";
+                break;
+            case ">=":
+                sCondition = "&gt;=";
+                break;
+        }
+
+        sIsNot = treedataSource[row].isnot;
+        sType = treedataSource[row].type;
+        sValue = treedataSource[row].value;
+
+        sValue = sValue.replace("&", "&amp;");
+
+        sCode = treedataSource[row].code;
+
+        sCode = sCode.replace(">", "&gt;").replace("<", "&lt;")
+
+        sFilterCont = treedataSource[row].cont;
+
+        if (sItemType.equals("Filter")) {
+            var SubXml = "";
+            var temppid = "";
+            for (var i = 0; i < treedataSource.length; i++) {
+                temppid = treedataSource[i].pid;
+                if (temppid == sid) {
+                    SubXml += this.FilterXml(i);
+                }
+            }
+            var LogicOperatorXml = "<LogicOperator isnot='" + sIsNot + "' operator='" + sCondition + "'>" + SubXml + "</LogicOperator>";
+            xml += LogicOperatorXml;
+        } else {
+            var ConditionXml = "";
+            ConditionXml += "<Condition isnot = '" + sIsNot + "' operator='" + sCondition + "' Type = '" + sType + "'>";
+            ConditionXml += "   <Editor>";
+            ConditionXml += "      <RefItem name='" + sName + "' ozid='" + sOzid + "' itemtype='" + sItemType + "' />";
+            ConditionXml += "   </Editor>";
+            ConditionXml += "   <Values>";
+            ConditionXml += "      <ValueItem>";
+            ConditionXml += "         <Code>" + sCode + "</Code>";
+            ConditionXml += "         <Value>" + sValue + "</Value>";
+            ConditionXml += "         <Desc><![CDATA[" + sDesc + "]]></Desc>";
+            ConditionXml += "      </ValueItem>";
+            ConditionXml += "   </Values>";
+            ConditionXml += "   <FilterCont>";
+            ConditionXml += "       <![CDATA[" + sFilterCont + "]]>";
+            ConditionXml += "   </FilterCont>";
+            ConditionXml += "</Condition>";
+            xml += ConditionXml;
+        }
+        return xml;
+    }
+
+
+
+    /**
+    * ozid로 항목 찾기
+    * Return 으로 몇개인지 돌아옴
+    **/
+    this.FindItemOzid = function (ozid) {
+        var cnt = 0;
+        var temp = "";
+        for (var i = 0; i < treedataSource.length; i++) {
+            temp = treedataSource[i].ozid;
+            if (temp.equals(ozid)) {
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+
+    
+    /**
+    * Explorer에서 사용하는 Item Count  화면에 보이는 Item의 Count
+    * 중복되어서 Count될 수 있음
+    */
+    Object.defineProperty(this, 'UseItemCnt', {
+        get: function () {
+            var cnt = 0;
+            var type = "";
+
+            for (var i = 0; i < treedataSource.length; i++) {
+                type = treedataSource[i].type;
+                if (!type.equals("Filter")) {
+                    cnt++;
+                }
+            }
+            return cnt;
+        }
+    });
+ }
+
+
+/**
+* 클릭시 이벤트 발생
+*/
+if (!ozexplorerfilter.prototype.addEventListener) {
+    ozexplorerfilter.prototype.addEventListener = function (e, f) {
+        if (e === "choicefilter") {
+            this.ChoiceFilterFnc = f;
+        }
+    }
+}

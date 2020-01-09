@@ -1,0 +1,10 @@
+﻿document.write('<link rel="stylesheet" type="text/css" href="../css/jq/jqx.base.css">');
+document.write('<script src="../js/jq/jqxcore.js"></script>');
+document.write('<script src="../js/jq/jqxpanel.js"></script>');
+document.write('<script src="../js/jq/jqxbuttons.js"></script>');
+document.write('<script src="../js/jq/jqxtree.js"></script>');
+document.write('<script src="../js/jq/jqxscrollbar.js"></script>');
+document.write('<script src="../js/jq/jqxtooltip.js"></script>');
+document.write('<script src="../js/jq/jqxdragdrop.js"></script>');
+document.write('<script src="../js/jq/jqxdragdrop.js"></script>');
+document.write('<script src="../js/external/oz.metatree.js"></script>');
